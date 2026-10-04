@@ -1,0 +1,21 @@
+{
+  "name": "qrius-leadmanager-automation-anusha",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anusha-poudel/qrius-leadmanager-automation-anusha.git"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/anusha-poudel/qrius-leadmanager-automation-anusha/issues"
+  },
+  "homepage": "https://github.com/anusha-poudel/qrius-leadmanager-automation-anusha#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.4"
+  }
+}
