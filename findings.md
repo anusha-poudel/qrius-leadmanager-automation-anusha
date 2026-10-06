@@ -10,8 +10,15 @@
 - **Verdict:** The application has a bug
 - **Reasoning:** The same search by hand also returns nothing, the company is in the leads table, and the brief says company search should work.
 
-## count text reflects the number of leads after a search(search.spec.ts)
-- **Predicted:** searching Mina Gurung narrows the count to 1 of 12 leads
-- **Actual:** Test is passed, Mina Gurung row shown, but text is still 12 of 12 leads
-- **Verdict:** The application has a bug
-- **Reasoning:** The count is not updating.
+## adding a lead with a chosen status saves it with that status(add-lead.spec.ts)
+- **Predicted:** after adding Sita Poudel with status Qualified, her row shows status Qualified
+- **Actual:** Sita Poudel is added but her row shows status New
+- **Verdict:** The application has a bug.
+- **Reasoning:** The status is not changing.
+
+## editing a lead's email updates it in the list (edit-lead.spec.ts)
+- **Predicted:** the email of lead changes
+- **Actual:** failed
+- **Verdict:** My test is wrong
+- **Reasoning:** I didnt run schema_and_run so the old email was already updated and i kept on using that.
+
