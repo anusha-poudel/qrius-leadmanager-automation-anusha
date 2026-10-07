@@ -22,3 +22,8 @@
 - **Verdict:** My test is wrong
 - **Reasoning:** I didnt run schema_and_run so the old email was already updated and i kept on using that.
 
+## an agent does not see a delete button (delete-lead.spec.ts)
+- **Predicted:** the agent sees 12 leads, and does not see delete button 
+- **Actual:** failed
+- **Verdict:** My test is wrong
+- **Reasoning:** the agent sees 11 leads at first since the previous delete test already deletes a lead.
