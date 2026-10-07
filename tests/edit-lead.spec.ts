@@ -1,24 +1,36 @@
 import { test, expect } from '@playwright/test';
+import { LeadsPage } from '../pages/leadsPage';
+import { loginAsAdmin } from '../test-data/auth';
+import { seededLead, editedStatus, editedEmail } from '../test-data/leads';
 
-test("editing a lead's email updates it in the list", async ({ page }) => {
-  const oldEmail = 'sita@himalkart.com.np'; // what the list shows now
-  const newEmail = 'sita.sh@himalkart.com.np';       // the new value to save
+test.describe('Edit a lead', () => {
+  let leads: LeadsPage;
 
-  // prediction: Sita Sharma's email changes from "sita@himalkart.com.np" to "sita.sh@himalkart.com.np" in the list
-  await page.goto('/login');
-  await page.getByTestId('username').fill('admin.qrius');
-  await page.getByTestId('password').fill('Admin@123');
-  await page.getByTestId('login-button').click();
-  await expect(page.getByTestId('nav-role')).toBeVisible();
+  test.beforeEach(async ({ page }) => {
+    leads = new LeadsPage(page);
+    await loginAsAdmin(page);
+    await expect(leads.rows.first()).toBeVisible(); 
+  });
 
-  const row = page.getByTestId('lead-row').filter({ hasText: 'Sita Sharma' });
-  await expect(row.getByRole('cell', { name: oldEmail, exact: true })).toBeVisible();
+  test("editing a lead's status updates it in the list", async () => {
+    // prediction: Sita Sharma's status changes from "New" to "Qualified" in the list
+    const row = leads.rowFor(seededLead.name);
+    await expect(row.getByRole('cell', { name: seededLead.status, exact: true })).toBeVisible();
 
-  await row.getByTestId('edit-button').click();
-  await page.getByTestId('email').fill(newEmail);
-  await page.getByTestId('save-button').click();
+    await leads.editStatus(seededLead.name, editedStatus);
 
-  await expect(row.getByRole('cell', { name: newEmail, exact: true })).toBeVisible();
-  await expect(row.getByRole('cell', { name: oldEmail, exact: true })).toHaveCount(0);
-  //actual: Sita Sharma's email changes.
+    await expect(row.getByRole('cell', { name: editedStatus, exact: true })).toBeVisible();
+    await expect(row.getByRole('cell', { name: seededLead.status, exact: true })).toHaveCount(0);
+  });
+
+  test("editing a lead's email updates it in the list", async () => {
+    // prediction: Sita Sharma's email changes from "sita@himalkart.com.np" to "sita.sharma@himalkart.com.np"
+    const row = leads.rowFor(seededLead.name);
+    await expect(row.getByRole('cell', { name: seededLead.email, exact: true })).toBeVisible();
+
+    await leads.editEmail(seededLead.name, editedEmail);
+
+    await expect(row.getByRole('cell', { name: editedEmail, exact: true })).toBeVisible();
+    await expect(row.getByRole('cell', { name: seededLead.email, exact: true })).toHaveCount(0);
+  });
 });

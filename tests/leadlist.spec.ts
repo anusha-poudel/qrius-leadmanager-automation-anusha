@@ -1,21 +1,32 @@
 import { test, expect } from '@playwright/test';
+import { LeadsPage } from '../pages/leadsPage';
+import { loginAs } from '../test-data/auth';
+import { admin, agent } from '../test-data/users';
+import { seededLead, totalSeededLeads } from '../test-data/leads';
 
-test('after sign in, the number of leads is shown', async ({ page }) => {
-    // prediction: after sign in, the number of leads is shown
-    await page.goto('/login');
-    await page.getByTestId('username').fill('admin.qrius');
-    await page.getByTestId('password').fill('Admin@123');
-    await page.getByTestId('login-button').click();
-    await expect(page).toHaveURL('http://localhost:5173/leads');
-    await expect(page.getByTestId('lead-count')).toBeVisible();
+test.describe('Leads list', () => {
+  test('the correct number of leads is shown after signing in', async ({ page }) => {
+    // prediction: 12 data rows in the table, and "Sita Sharma" appears once with company "HimalKart"
+    const leads = new LeadsPage(page);
+    await loginAs(page, admin);
+
+    await expect(leads.dataRows).toHaveCount(totalSeededLeads);
+
+    const row = leads.dataRows.filter({ hasText: seededLead.name });
+    await expect(row).toHaveCount(1);
+    await expect(row.getByRole('cell', { name: seededLead.company, exact: true })).toBeVisible();
   });
 
+  test('the role badge shows ADMIN for the admin', async ({ page }) => {
+    // prediction: the text "ADMIN" is visible in the page header
+    await loginAs(page, admin);
+    await expect(page.getByText('ADMIN', { exact: true })).toBeVisible();
+  });
 
-test('role badge shows signed-in user role', async ({ page }) => {
-    // prediction: after login, nav-role badge shows the role of the signed-in user
-    await page.goto('/login');
-    await page.getByTestId('username').fill('admin.qrius');
-    await page.getByTestId('password').fill('Admin@123');
-    await page.getByTestId('login-button').click();
-    await expect(page.getByTestId('nav-role')).toHaveText('ADMIN');
-    });
+  test('the role badge shows AGENT for the agent', async ({ page }) => {
+    // prediction: "AGENT" and "agent.qrius" are visible in the page header
+    await loginAs(page, agent);
+    await expect(page.getByText('AGENT', { exact: true })).toBeVisible();
+    await expect(page.getByText('agent.qrius', { exact: true })).toBeVisible();
+  });
+});
